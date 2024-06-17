@@ -55,8 +55,13 @@ jobs:
         run: |
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
-          cp out/arch/arm64/boot/Image-dtb AnyKernel3
+#         make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+#         cp out/arch/arm64/boot/Image-dtb AnyKernel3
+      - name: Upload defconfig
+        uses: actions/upload-artifact@v4
+        with:
+          name: defconfig-${{ steps.get_time.outputs.TIME }}
+          path: ".config"
       - name: Upload Kernel-SU
         uses: actions/upload-artifact@v4
         with:
