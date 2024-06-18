@@ -34,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y 
-          sudo apt install gcc-aarch64-linux-gnu -y
-          sudo apt install gcc-arm-linux-gnueabi -y
+          echo "sudo apt install gcc-aarch64-linux-gnu"
+          echo "sudo apt install gcc-arm-linux-gnueabi"
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
           git clone https://github.com/kdrag0n/proton-clang --dept=1 -b master
