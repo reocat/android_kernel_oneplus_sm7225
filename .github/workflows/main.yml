@@ -20,7 +20,7 @@ jobs:
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "vendor/lito-perf_defconfig"
-      KERNEL_CMDLINE: "ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- LD=aarch64-linux-gnu-ld O=out"
+      KERNEL_CMDLINE: "ARCH=arm64 CC=gcc CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- LD=aarch64-linux-gnu-ld O=out"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,11 +34,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y 
-          echo "sudo apt install gcc-aarch64-linux-gnu"
-          echo "sudo apt install gcc-arm-linux-gnueabi"
-          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
+          sudo apt install gcc-aarch64-linux-gnu
+          sudo apt install gcc-arm-linux-gnueabi
+          sudo apt install aria2 binutils gcc make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
-          git clone https://github.com/kdrag0n/proton-clang --dept=1 -b master
+          # git clone https://github.com/kdrag0n/proton-clang --dept=1 -b master
           git clone https://github.com/osm0sis/AnyKernel3
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
@@ -51,9 +51,9 @@ jobs:
           echo "TIME=$(TZ=UTC+3 date +%s )" >> $GITHUB_OUTPUT
       - name: Build Kernel-With-KernelSU
         run: |
-          export PATH=$(pwd)/proton-clang/bin/:$PATH
-          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
-          make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+          # export PATH=$(pwd)/proton-clang/bin/:$PATH
+          make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache gcc"
+          make $KERNEL_CMDLINE CC="ccache gcc" -j$(nproc --all)
           cp out/arch/arm64/boot/Image-dtb AnyKernel3
       - name: Upload defconfig
         uses: actions/upload-artifact@v4
