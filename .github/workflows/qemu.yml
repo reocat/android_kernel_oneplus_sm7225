@@ -1,4 +1,4 @@
-on: [workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   armv7_job:
@@ -12,7 +12,7 @@ jobs:
         id: runcmd
         with:
           arch: aarch64
-          distro: archarm_latest
+          distro: ubuntu22.04
 
           # Not required, but speeds up builds by storing container images in
           # a GitHub package registry.
@@ -21,10 +21,16 @@ jobs:
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             uname -a
-            whoami
-            yes | pacman -Syu
-            yes | pacman -S base-devel clang git wget curl unzip python perl
+            apt-get update -q -y
+            apt-get install -q -y binutils clang make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs curl wget gcc
+            rm -rf KernelSU
+            rm -rf drivers/kernelsu
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-            make ARCH=arm64 enchilada_defconfig O=out -j$(nproc --all)
+            make ARCH=arm64 vendor/lito-perf_defconfig O=out -j$(nproc --all)
             make ARCH=arm64 O=out -j$(nproc --all)
-            
+            echo ::set-output name=ls::$(ls .)
+
+      - name: Get the output
+        # Echo the `uname` output parameter from the `runcmd` step
+        run: |
+          echo "The uname output was ${{ steps.runcmd.outputs.ls }}"
