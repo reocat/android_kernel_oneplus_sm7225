@@ -23,7 +23,7 @@ jobs:
             uname -a
             whoami
             yes | pacman -Syu
-            yes | pacman -S base-devel clang
+            yes | pacman -S base-devel clang git wget curl unzip
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
             make ARCH=arm64 enchilada_defconfig O=out -j$(nproc --all)
             make ARCH=arm64 O=out -j$(nproc --all)
