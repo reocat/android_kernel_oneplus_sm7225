@@ -22,7 +22,7 @@ jobs:
           run: |
             uname -a
             apt-get update -q -y
-            apt-get install -q -y binutils clang make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs curl wget gcc
+            apt-get install -q -y binutils clang make python3 python-is-python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs curl wget gcc
             rm -rf KernelSU
             rm -rf drivers/kernelsu
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
